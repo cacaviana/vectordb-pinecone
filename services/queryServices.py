@@ -40,9 +40,9 @@ def query_filter_itvaley(vetor: list[float], namespace: str):
     result_query = index.query(
         namespace=namespace,
         vector=vetor,
-        top_k=1000,
+        top_k=30,
 
-        include_metadata=True
+        #include_metadata=True
     )
 
     return result_query
