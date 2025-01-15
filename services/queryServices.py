@@ -42,7 +42,7 @@ def query_filter_itvaley(vetor: list[float], namespace: str):
         vector=vetor,
         top_k=30,
 
-        #include_metadata=True
+        include_metadata=True
     )
 
     return result_query
