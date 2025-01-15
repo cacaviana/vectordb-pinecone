@@ -114,3 +114,35 @@ def upsert_chunks(index_name: str, chunks: list, namespace="default"):
     response = index.upsert(vectors=vectors, namespace=namespace)
     return response
 
+
+def upsert_document_semmetadados(index_name: str, chunks: list, namespace: str):
+    """
+    Gera embeddings para chunks e realiza o upsert no banco vetorial.
+
+    Args:
+        index_name (str): Nome do índice no Pinecone.
+        chunks (list): Lista de chunks de texto.
+        embedding_model: Modelo de embeddings.
+        namespace (str): Namespace para organizar os dados.
+
+    Returns:
+        dict: Resposta da operação de upsert.
+    """
+    vectors = []
+    for i, chunk in enumerate(chunks):
+        embedding = embedding_chunk_openAI(chunk)  # Gerar embedding
+        
+        
+        vectors.append({
+            "id": f"chunk-{i}",
+            "values": embedding["data"][0]["embedding"],
+            "metadata": {"chunk_text": chunk}
+        })
+
+
+    # Conectar ao índice e realizar o upsert
+    index = pinecone_client.Index(index_name)
+    response = index.upsert(vectors=vectors, namespace=namespace)
+    print(response)
+    return response
+

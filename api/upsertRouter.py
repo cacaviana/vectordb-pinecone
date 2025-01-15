@@ -1,5 +1,5 @@
-from services.upsertServices import upsert_document
-from services.miscellaneousServices import extract_text_from_pdf, split_text_into_chunks
+from services.upsertServices import upsert_document, upsert_document_semmetadados
+from services.miscellaneousServices import extract_text_from_pdf, split_text_into_chunks, split_text_into_chunks_maiores
 from fastapi import APIRouter, UploadFile, Form
 from fastapi.responses import JSONResponse
 import json
@@ -36,6 +36,18 @@ async def upsert_vectorstore(filepdf: UploadFile, metadone: str = Form(...)):
 
     return {"message": f"Upsert realizado com sucesso. Total de chunks inseridos: {upsert_response}"}
 
+
+@router.post('/upsert/upsert-pdf/client-finance', summary="Enviar um arquivo PDF para a VectorStore", 
+             description="Envie um arquivo PDF, ele irar extrair o texto, criar os chunks, o embeddings e salva na VectorStore",
+             response_description="Quantos Vectores foram salvos no Index (BD) da Vectore Store")
+
+async def upsert_vectorstore_clientfinance(filepdf: UploadFile):
+    
+    TextFromPDF = extract_text_from_pdf(filepdf)
+    chucklist = split_text_into_chunks_maiores(text=TextFromPDF)
+    upsert_response = upsert_document_semmetadados(index_name="client-finance", chunks=chucklist, namespace="ClientFinance")
+    
+    return {"message": f"Upsert realizado com sucesso. Total de chunks inseridos: {upsert_response}"}
 
 
 

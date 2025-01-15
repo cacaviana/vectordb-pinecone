@@ -46,3 +46,29 @@ def split_text_into_chunks(text: str, chunk_size=512, overlap=50) -> list:
 
     return chunks
 
+def split_text_into_chunks_maiores(text: str, chunk_size=2048, overlap=200) -> list:
+    """
+    Divide o texto em chunks menores com sobreposição.
+
+    Args:
+        text (str): Texto para dividir.
+        chunk_size (int): Tamanho máximo de cada chunk.
+        overlap (int): Número de caracteres sobrepostos entre chunks.
+
+    Returns:
+        list: Lista de chunks.
+    """
+    chunks = []
+    for i in range(0, len(text), chunk_size - overlap):
+        chunks.append(text[i:i + chunk_size])
+        #print(i+chunk_size)
+        #print(f"Total de chunks: {len(chunks)}")
+        
+    '''
+    for chunk in chunks:
+        print(f"Tipo de chunk: {type(chunk)}, Conteúdo: {chunk[:50]}...") 
+    '''
+
+
+    return chunks
+

@@ -32,3 +32,17 @@ def query_filter(vetor: list[float], metadone: dict[str, str], namespace: str):
     )
 
     return result_query
+
+def query_filter_itvaley(vetor: list[float], namespace: str):
+
+    index = pinecone_client.Index(host="https://client-finance-xb3w3p4.svc.aped-4627-b74a.pinecone.io")
+
+    result_query = index.query(
+        namespace=namespace,
+        vector=vetor,
+        top_k=1000,
+
+        include_metadata=True
+    )
+
+    return result_query
