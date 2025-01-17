@@ -21,12 +21,12 @@ async def query_simples_router(seach:str, namespace: str = "MasterIADEV"):
     return  {f'Resulta:{result_query}'}
 
 @router.post('/query/query-filter')
-async def query_filter_router(seach:str, namespace: str = "MasterIADEV"):
+async def query_filter_router(seach:str, metadone: dict[str, str], namespace: str = "MasterIADEV"):
     
     embedding_list = embedding_chunk_openAI(seach)
     list_embedding = embedding_list["data"][0]["embedding"]
     
-    result_query = query_filter(vetor=list_embedding, namespace=namespace)
+    result_query = query_filter(vetor=list_embedding, metadone=metadone, namespace=namespace)
 
     print(result_query)
     
@@ -43,3 +43,4 @@ async def query_filter_router_finance(seach:str, namespace: str = "ClientFinance
     print(result_query)
     
     return {f'Result: {result_query}'}
+

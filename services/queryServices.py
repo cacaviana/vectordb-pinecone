@@ -19,7 +19,7 @@ def query_simple(vetor: list[float], namespace: str):
 
     return result_query
 
-def query_filter(vetor: list[float], namespace: str):
+def query_filter(vetor: list[float], metadone: dict[str, str], namespace: str):
 
     index = pinecone_client.Index(host=os.getenv("HOST_PINECONE"))
 
@@ -27,6 +27,7 @@ def query_filter(vetor: list[float], namespace: str):
         namespace=namespace,
         vector=vetor,
         top_k=1000,
+        filter=metadone,
         include_metadata=True
     )
 
