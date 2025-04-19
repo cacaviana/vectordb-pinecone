@@ -3,7 +3,7 @@ from services.queryServices import query_simple, query_filter, query_filter_itva
 from services.embeddingsService import embedding_chunk_openAI, embedding_chunk_openAI_client_finance
 import json
 
-router = APIRouter()
+router = APIRouter(tags=["Querys"])
 
 
 @router.post('/query/query-simple')
@@ -13,12 +13,23 @@ async def query_simples_router(seach:str, namespace: str = "MasterIADEV"):
     list_embedding = embedding_list["data"][0]["embedding"]
 
     
-    result_query = query_simple(namespace=namespace, vetor=list_embedding)
-    print(result_query)
+    result_query =  query_simple(namespace=namespace, vetor=list_embedding)
+    
+    print(type(result_query))
+    #print(result_query)
     print(type(result_query["matches"][0]))
+    print(type(result_query["matches"]))
     print(result_query["matches"])
 
-    return  {f'Resulta:{result_query}'}
+    listMatches = result_query["matches"]
+
+    for i in listMatches:
+        values = i["id"]
+        print(values)
+
+
+
+    return  {f'Resulta:{result_query.matches[0].id}'}
 
 @router.post('/query/query-filter')
 async def query_filter_router(seach:str, metadone: dict[str, str], namespace: str = "MasterIADEV"):

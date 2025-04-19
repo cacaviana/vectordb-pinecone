@@ -41,7 +41,6 @@ def query_filter_itvaley(vetor: list[float], namespace: str):
         namespace=namespace,
         vector=vetor,
         top_k=30,
-
         include_metadata=True
     )
 

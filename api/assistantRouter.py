@@ -4,7 +4,7 @@ from services.queryServices import query_filter, query_filter_itvaley
 from services.embeddingsService import embedding_chunk_openAI
 
 
-router = APIRouter()
+router = APIRouter(tags=["AssistantOpenAI"])
 
 
 

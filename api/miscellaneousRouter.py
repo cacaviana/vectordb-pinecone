@@ -30,6 +30,20 @@ async def split_in_chunck_oficial(text: str):
     except Exception as e:
         # Trata qualquer erro e retorna uma exceção HTTP 400
         raise HTTPException(status_code=400, detail=f"Erro ao dividir texto em chunks: {str(e)}")
+        
+
+
+@router.post('/api/miscellaneous/split_in_chuncks_embedding', summary="Split text into chunks and create embeddings")
+async def split_in_chuncks(text: str): 
+
+    try:     
+        chunks_list = slip_text_into_chunks(text=text)
+        embeddings = []
+        for chunk in chunks_list:
+            embeddings.append(embeddingsService(chunk=chunk))   
+        return embeddings
+    except Exception as e: 
+        return {"error": str(e)}
     
 
 

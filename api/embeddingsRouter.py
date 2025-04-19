@@ -4,7 +4,7 @@ from services.embeddingsService import embedding_chunk_openAI
 
 
 
-router = APIRouter()
+router = APIRouter(tags=["Embeddings"])
 
 @router.post('/embeddings/simple-embeddings', summary="Cria um embedding de um trecho de texto")
 def embedding_chunk_openAI_router(chunk: str):

@@ -4,7 +4,7 @@ from services.indexServices import create_index, details_index, listall_index
 
 
 
-router = APIRouter()
+router = APIRouter(tags=["Indexs"])
 
 
 
