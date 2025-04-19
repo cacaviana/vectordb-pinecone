@@ -54,3 +54,4 @@ async def query_filter_router_finance(seach:str, namespace: str = "ClientFinance
     print(result_query)
     
     return {f'Result: {result_query}'}
+
