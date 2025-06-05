@@ -1,8 +1,12 @@
 from services.upsertServices import upsert_document, upsert_document_semmetadados
 from services.miscellaneousServices import extract_text_from_pdf, split_text_into_chunks, split_text_into_chunks_maiores
-from fastapi import APIRouter, UploadFile, Form
+from fastapi import APIRouter, UploadFile, Form, File
 from fastapi.responses import JSONResponse
 import json
+from typing import Dict, Any
+from pydantic import BaseModel
+from typing import List, Dict
+from services.embeddingsService import embedding_chunk_openAI
 
 
 router = APIRouter(tags=["Upserts"])
@@ -60,7 +64,7 @@ async def upsert_vectorstore_clientfinance(filepdf: UploadFile):
 
 
 @router.post('/api/upsert/pdf_metadata_dict', summary="Upsert a document PDF into the database")
-async def upsert_metadata(filepdf: UploadFile = File(...), metadata: MetadataModel = Form(...)):  
+async def upsert_metadata(filepdf: UploadFile = File(...), metadata: Dict[str, Any] = Form(...)):  
 
     
     metadate_dict = json.load(metadata)
@@ -81,7 +85,7 @@ def upsertService_text(chukstextList: list, metadata: dict[str, str]):
         vectors = []
 
         for chuck_unit in chukstextList:
-            embeddings = embeddingsService(chunck=chuck_unit)
+            embeddings = embedding_chunk_openAI(chunck=chuck_unit)
 
             metadatacomplete = { **metadata, "chuck": chuck_unit}
 
@@ -103,9 +107,7 @@ class UpsertRequest(BaseModel):
     metadone: Dict[str, str]  # Metadados no formato dicionário
 
 
-from pydantic import BaseModel
-from typing import List, Dict
-from services.emdeggingsService import embeddingsService
+
 
 
 # Modelo Pydantic para Metadata
