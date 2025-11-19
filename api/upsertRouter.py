@@ -20,7 +20,7 @@ async def upsert_vectorstore(filepdf: UploadFile):
     
     TextFromPDF = extract_text_from_pdf(filepdf)
     chucklist = split_text_into_chunks(text=TextFromPDF)
-    upsert_response = upsert_document(index_name="itvalleycourses", chunks=chucklist, namespace="MasterIADEV")
+    upsert_response = upsert_document(index_name="employee", chunks=chucklist, namespace="MasterIADEV")
     
     return {"message": f"Upsert realizado com sucesso. Total de chunks inseridos: {upsert_response}"}
 
