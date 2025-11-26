@@ -17,68 +17,45 @@ class UpsertRequest(BaseModel):
 pinecone_client = authentication_Pinecone()
 
 
-def upsert_document(index_name: str, chunks: list, namespace: str):
+def upsert_document(index_name: str, chunks: list, namespace: str, metadone: dict[str, str] = None):
     """
     Gera embeddings para chunks e realiza o upsert no banco vetorial.
 
     Args:
         index_name (str): Nome do índice no Pinecone.
         chunks (list): Lista de chunks de texto.
-        embedding_model: Modelo de embeddings.
         namespace (str): Namespace para organizar os dados.
+        metadone (dict[str, str], optional): Metadados adicionais para incluir nos vetores.
 
     Returns:
         dict: Resposta da operação de upsert.
     """
-    vectors = []
-    for i, chunk in enumerate(chunks):
-        embedding = embedding_chunk_openAI(chunk)  # Gerar embedding
-        
-        
-        vectors.append({
-            "id": f"chunk-{i}",
-            "values": embedding["data"][0]["embedding"],
-            "metadata": {"chunk_text": chunk}
-        })
+    try:
+        vectors = []
+        for i, chunk in enumerate(chunks):
+            embedding = embedding_chunk_openAI(chunk)  # Gerar embedding
+            
+            # Criar metadata: se metadone for fornecido, mesclar com chunk_text
+            if metadone:
+                chunk_metadata = {**metadone, "chunk": chunk}
+            else:
+                chunk_metadata = {"chunk_text": chunk}
 
+            vectors.append({
+                "id": f"chunk-{i}",
+                "values": embedding["data"][0]["embedding"],
+                "metadata": chunk_metadata
+            })
 
-    # Conectar ao índice e realizar o upsert
-    index = pinecone_client.Index(index_name)
-    response = index.upsert(vectors=vectors, namespace=namespace)
-    print(response)
-    return response
-
-def upsert_document(index_name: str, chunks: list, namespace: str, metadone: dict[str, str]):
-    """
-    Gera embeddings para chunks e realiza o upsert no banco vetorial.
-
-    Args:
-        index_name (str): Nome do índice no Pinecone.
-        chunks (list): Lista de chunks de texto.
-        embedding_model: Modelo de embeddings.
-        namespace (str): Namespace para organizar os dados.
-
-    Returns:
-        dict: Resposta da operação de upsert.
-    """
-    vectors = []
-    for i, chunk in enumerate(chunks):
-        embedding = embedding_chunk_openAI(chunk)  # Gerar embedding
-        
-        chunk_metadata = {**metadone, "chunk": chunk}
-
-        vectors.append({
-            "id": f"chunk-{i}",
-            "values": embedding["data"][0]["embedding"],
-            "metadata": chunk_metadata
-        })
-
-
-    # Conectar ao índice e realizar o upsert
-    index = pinecone_client.Index(index_name)
-    response = index.upsert(vectors=vectors, namespace=namespace)
-    print(response)
-    return response
+        # Conectar ao índice e realizar o upsert
+        index = pinecone_client.Index(index_name)
+        response = index.upsert(vectors=vectors, namespace=namespace)
+        print(response)
+        return response
+    except Exception as e:
+        error_msg = f"Erro ao realizar upsert no Pinecone: {str(e)}"
+        print(error_msg)
+        raise Exception(error_msg)
 
 
 
